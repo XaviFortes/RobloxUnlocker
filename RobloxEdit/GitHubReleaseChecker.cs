@@ -105,27 +105,27 @@ namespace RobloxUnlocker
         private async Task DownloadAndInstallLatestVersion()
         {
             string latestVersion = await GetLatestReleaseVersion();
-            string downloadUrl = $"https://github.com/{RepositoryOwner}/{RepositoryName}/releases/latest/download/RobloxUnlocker.exe";
+            string downloadUrl = $"https://github.com/{RepositoryOwner}/{RepositoryName}/releases/latest/download/Setup.msi";
 
             // Perform the download and installation process using appropriate methods
             // For example, you can use WebClient.DownloadFileAsync to download the installer
             // and Process.Start to launch the installer.
 
             // Here's an example of using WebClient to download the installer file:
-            string installerPath = Path.Combine(appDataFolder, $"RobloxUnlocker-{latestVersion}.exe");
+            string installerPath = Path.Combine(appDataFolder, $"RobloxUnlocker-{latestVersion}.msi");
             using (WebClient client = new WebClient())
             {
                 await client.DownloadFileTaskAsync(downloadUrl, installerPath);
             }
 
             // After the download, you can launch the installer
-            // Process.Start(installerPath);
-
-            // Close the current application
-            // Application.Current.Shutdown();
+            Process.Start(installerPath);
 
             // Open the installer folder
             Process.Start("explorer.exe", appDataFolder);
+
+            // Close the current application
+            Application.Current.Shutdown();
         }
     }
 }

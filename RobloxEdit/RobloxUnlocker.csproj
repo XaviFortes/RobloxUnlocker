@@ -132,8 +132,6 @@
     </ApplicationDefinition>
     <Compile Include="GitHubReleaseChecker.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="Roblox\FFlags.cs" />
-    <Compile Include="Roblox\Roblox.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

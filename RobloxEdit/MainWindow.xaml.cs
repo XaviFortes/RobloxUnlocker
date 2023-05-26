@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -17,8 +18,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using RobloxUnlocker.Roblox;
-
 namespace RobloxUnlocker
 {
     /// <summary>
@@ -32,8 +31,6 @@ namespace RobloxUnlocker
             InitializeComponent();
         }
 
-        public FFlags Flags { get; set; }
-
         // Do checkings when the window is loaded
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -43,7 +40,7 @@ namespace RobloxUnlocker
             Checks();
         }
         
-        private void patchGame(Process p)
+        private async void patchGame()
         {
             robloxLabel.Content = "Roblox Running";
             robloxLabel.Foreground = Brushes.Green;
@@ -52,37 +49,89 @@ namespace RobloxUnlocker
             fpsTextBox.IsEnabled = true;
 
             Console.WriteLine("Hello Warudo");
+            // Get raw body of "https://setup.rbxcdn.com/version"
+            // Get the version from the body
 
-            var path = System.IO.Path.GetDirectoryName(p.MainModule.FileName);
-            Globals.AppVersionPath = path;
+            string versionUrl = "https://setup.rbxcdn.com/version";
 
-            if (!Directory.Exists(System.IO.Path.Combine(path, "ClientSettings")))
+            using (HttpClient client = new HttpClient())
             {
-                Console.WriteLine("Folder doesn't exist");
-                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(path, "ClientSettings"));
+                client.DefaultRequestHeaders.Add("User-Agent", "Roblox");
+                HttpResponseMessage response = await client.GetAsync(versionUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    string latestVersion = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Latest version: {latestVersion}");
+                    Globals.LatestVersion = latestVersion;
+                    Globals.RobloxPath = System.IO.Path.Combine(Globals.VersionsFolder, latestVersion);
+                }
+                else
+                {
+                    // Handle the error case when the API request fails
+                    Debug.WriteLine($"Failed to retrieve the latest version. Status code: {response.StatusCode}");
+                    throw new HttpRequestException($"Failed to retrieve the latest version. Status code: {response.StatusCode}");
+                }
             }
 
-            Globals.AppConfigPath = System.IO.Path.Combine(path, "ClientSettings", "ClientAppSettings.json");
+            if (!Directory.Exists(Globals.RobloxPath))
+            {
+                Globals.OldVersion = true;
+                Console.WriteLine("Folder doesn't exist");
+                System.IO.Directory.CreateDirectory(Globals.RobloxPath);
+            }
+
+                
+
+            if (!Directory.Exists(System.IO.Path.Combine(Globals.RobloxPath, "ClientSettings")))
+            {
+                Console.WriteLine("Folder doesn't exist");
+                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(Globals.RobloxPath, "ClientSettings"));
+            }
+
+            Globals.AppConfigPath = System.IO.Path.Combine(Globals.RobloxPath, "ClientSettings", "ClientAppSettings.json");
+
+            // Create the text file if it doesn't exist
+            if (!File.Exists(Globals.AppConfigPath))
+            {
+                Console.WriteLine("File Config doesn't exist");
+                File.Create(Globals.AppConfigPath).Dispose();
+            }
 
             // Check if file exists and contains "DFIntTaskSchedulerTargetFps" over 60
             // If it does get the value and write it to the textbox
             // If it doesn't write 144 to the textbox
-            if (File.Exists(Globals.AppConfigPath))
+            if (!File.Exists(Globals.AppConfigPath))
             {
-                Console.WriteLine("File exists");
-                var content = File.ReadAllText(Globals.AppConfigPath);
-                if (content.Contains("DFIntTaskSchedulerTargetFps"))
+                GetLatestFFLags();
+            }
+            // CloseProcess("RobloxPlayerBeta");
+        }
+
+        private async void GetLatestFFLags()
+        {
+            // Insert the json of the pastebin "https://pastebin.com/raw/actWUApG"
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", "Roblox");
+                HttpResponseMessage response = await client.GetAsync("https://pastebin.com/raw/actWUApG");
+                if (response.IsSuccessStatusCode)
                 {
-                    var fps = content.Split(':')[1].Replace("}", "").Replace(" ", "");
-                    if (Convert.ToInt32(fps) > 60)
-                    {
-                        fpsTextBox.Text = fps;
-                        fpsLabel.Content = "Unlocked!!!";
-                        fpsLabel.Foreground = Brushes.Green;
-                    }
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    // With Newtonsoft.Json change the value of "DFIntTaskSchedulerTargetFps" to the value of the textbox fpsTextBox.Text
+                    dynamic release = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                    release.DFIntTaskSchedulerTargetFps = Convert.ToInt32(fpsTextBox.Text);
+                    json = Newtonsoft.Json.JsonConvert.SerializeObject(release, Newtonsoft.Json.Formatting.Indented);
+
+                    File.WriteAllText(Globals.AppConfigPath, json);
+                }
+                else
+                {
+                    // Handle the error case when the API request fails
+                    Debug.WriteLine($"Failed to retrieve the config file. Status code: {response.StatusCode}");
+                    throw new HttpRequestException($"Failed to retrieve the config file. Status code: {response.StatusCode}");
                 }
             }
-            CloseProcess("RobloxPlayerBeta");
         }
 
         public static void CloseProcess(string processName)
@@ -124,42 +173,25 @@ namespace RobloxUnlocker
             // Check for updates
             await releaseChecker.CheckForUpdates(currentVersion);
 
-            var process = Process.GetProcessesByName("RobloxPlayerBeta").FirstOrDefault();
-            if (process == null) {
-                // Run Launcher to update game
-                var processStartInfo = new ProcessStartInfo
-                {
-                    FileName = "roblox-player://",
-                    // Arguments = "-app",
-                    UseShellExecute = true,
-                    CreateNoWindow = true
-                };
 
-                Debug.WriteLine("Starting Process " + processStartInfo);
+            fpsButton.IsEnabled = true;
 
-                var pLaunch = Process.Start(processStartInfo);
-                // patchGame(pLaunch);
-                pLaunch.WaitForExit();
-                if (Process.GetProcessesByName("RobloxPlayerBeta").FirstOrDefault() != null)
-                {
-                    process = Process.GetProcessesByName("RobloxPlayerBeta").FirstOrDefault();
-                    patchGame(process);
-                    fpsButton.IsEnabled = true;
-                }
-            }
-            
+            patchGame();
+
             // Check if roblox is running
-            
+            var process = Process.GetProcessesByName("RobloxPlayerBeta").FirstOrDefault();
             if (process != null)
             {
-                
+                // Get the folder of the running roblox
+                var cVersion = process.MainModule.FileName;
+                robloxLabel.Content = "Roblox Running, Restart it!";
+                robloxLabel.Foreground = Brushes.Orange;
+                MessageBox.Show($"You are currently running version {cVersion}\nLatest version is {Globals.LatestVersion}");
             }
             else
             {
-                robloxLabel.Content = "Roblox Not Running";
-                robloxLabel.Foreground = Brushes.Red;
-                fpsButton.IsEnabled = false;
-                fpsTextBox.IsEnabled = false;
+                robloxLabel.Content = "Roblox";
+                robloxLabel.Foreground = Brushes.Green;
 
             }
         }
@@ -174,47 +206,19 @@ namespace RobloxUnlocker
 
         private void FpsButton_Click(object sender, RoutedEventArgs e)
         {
-            // Check if file exists and if read if the file contains "DFIntTaskSchedulerTargetFps"
-            // It should write something like this '{"DFIntTaskSchedulerTargetFps": 144}' to the file
-            // If it doesn't exist it should create the file and write the same thing
-            // Also get the value from the textbox and write it to the file instead of 144
-            // Get the route from the process "RobloxPlayerBeta" and add the file name to the route
+            // I will Replace the value of "DFIntTaskSchedulerTargetFps" JSON to the value of the textbox fpsTextBox.Text
+            var content = File.ReadAllText(Globals.AppConfigPath);
+            dynamic release = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            release.DFIntTaskSchedulerTargetFps = Convert.ToInt32(fpsTextBox.Text);
+            content = Newtonsoft.Json.JsonConvert.SerializeObject(release, Newtonsoft.Json.Formatting.Indented);
 
-            
-            // var path = System.IO.Path.GetDirectoryName(process.MainModule.FileName);
-            // if folder doesn't exist create it
-            var file = Globals.AppConfigPath;
-            if (System.IO.File.Exists(file))
-            {
-                Console.WriteLine("File exists");
-                var content = System.IO.File.ReadAllText(file);
-                if (content.Contains("DFIntTaskSchedulerTargetFps"))
-                {
-                    var fps = content.Split(':')[1].Replace("}", "").Replace(" ", "");
-                    Console.WriteLine("File contains DFIntTaskSchedulerTargetFps set to" + fps);
-                    System.IO.File.WriteAllText(file, content.Replace(content.Split(':')[1].Replace("}", "").Replace(" ", ""), fpsTextBox.Text));
-                    fpsLabel.Content = "FPS Changed";
-                    fpsLabel.Foreground = Brushes.Green;
-                }
-                else
-                {
-                    Console.WriteLine("File doesn't contain DFIntTaskSchedulerTargetFps");
-                    System.IO.File.WriteAllText(file, content + "\n" + "{\"DFIntTaskSchedulerTargetFps\": " + fpsTextBox.Text + "}");
-                    fpsLabel.Content = "FPS Changed";
-                    fpsLabel.Foreground = Brushes.Green;
-                }
-            }
-            else
-            {
-                System.IO.File.WriteAllText(file, "{\"DFIntTaskSchedulerTargetFps\": " + fpsTextBox.Text + "}");
-                fpsLabel.Content = "FPS Changed";
-                fpsLabel.Foreground = Brushes.Green;
-            }
+            File.WriteAllText(Globals.AppConfigPath, content);
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             Checks();
+            GetLatestFFLags();
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
