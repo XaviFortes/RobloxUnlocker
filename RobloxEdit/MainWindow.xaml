@@ -16,7 +16,7 @@
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Height="20" VerticalAlignment="Top" Margin="0">
             <Menu Background="Transparent">
                 <MenuItem Header="Help" Background="#FF444444" Foreground="White">
-                    <MenuItem Header="About" Click="About_Click"/>
+                    <MenuItem Header="About" Background="#FF444444" Foreground="White" Click="About_Click" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </MenuItem>
                 <MenuItem Header="Close" Background="#FF444444" Foreground="White" Click="Close_Click" Height="20"/>
             </Menu>

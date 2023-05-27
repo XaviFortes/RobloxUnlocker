@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -220,10 +221,10 @@ namespace RobloxUnlocker
             Checks();
             GetLatestFFLags();
         }
-
         private void About_Click(object sender, RoutedEventArgs e)
         {
-
+            // Open the about window
+            var about = new About();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
@@ -251,5 +252,65 @@ namespace RobloxUnlocker
             invSort.Show();
             */
         }
+    }
+
+    internal class About
+    {
+        public About()
+        {
+            // Generate the about window
+            var about = new Window();
+            about.Title = "About";
+            about.Width = 300;
+            about.Height = 300;
+            about.ResizeMode = ResizeMode.NoResize;
+            about.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            // Define the colors
+            var backgroundColor = (Color)ColorConverter.ConvertFromString("#FF444444");
+            var foregroundColor = Colors.White;
+
+            // Create a Grid to hold the content
+            var grid = new Grid
+            {
+                Background = new SolidColorBrush(backgroundColor)
+            };
+            about.Content = grid;
+
+            // Create a TextBlock for the text
+            var textBlock = new TextBlock
+            {
+                Text = $"Roblox Unlocker Tool\n\nMade by: Xavi Fortes\n\nVersion: {Assembly.GetEntryAssembly().GetName().Version}",
+                FontSize = 16,
+                TextWrapping = TextWrapping.Wrap,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(backgroundColor),
+                Foreground = new SolidColorBrush(foregroundColor)
+            };
+            // Add the TextBlock to the grid
+            grid.Children.Add(textBlock);
+
+            // Create a Button
+            var button = new Button
+            {
+                Content = "GitHub",
+                FontSize = 16,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Background = new SolidColorBrush(backgroundColor),
+                Foreground = new SolidColorBrush(foregroundColor)
+            };
+            button.Click += (sender, args) => Process.Start("https://github.com/XaviFortes");
+            // Add the Button to the grid
+            grid.Children.Add(button);
+
+            // Set the colors as resources in the About window
+            about.Resources.Add("MenuBackground", new SolidColorBrush(backgroundColor));
+            about.Resources.Add("MenuForeground", new SolidColorBrush(foregroundColor));
+
+            about.Show();
+        }
+
     }
 }
