@@ -41,9 +41,9 @@ namespace RobloxUnlocker
             Checks();
         }
         
-        private async void patchGame()
+        private async void PatchGame()
         {
-            robloxLabel.Content = "Roblox Running";
+            robloxLabel.Content = "Roblox";
             robloxLabel.Foreground = Brushes.Green;
 
             fpsButton.IsEnabled = true;
@@ -106,6 +106,17 @@ namespace RobloxUnlocker
                 GetLatestFFLags();
             }
             // CloseProcess("RobloxPlayerBeta");
+            var fps = GetConfigFPS();
+            if (fps > 60)
+            {
+                fpsTextBox.Text = fps.ToString();
+                fpsLabel.Content = "Unlocked!";
+                fpsButton.Content = "Update limit";
+            }
+            else
+            {
+                fpsTextBox.Text = "144";
+            }
         }
 
         private async void GetLatestFFLags()
@@ -160,9 +171,19 @@ namespace RobloxUnlocker
                 }
             }
         }
+        
+        public int GetConfigFPS()
+        {
+            // Get the value of "DFIntTaskSchedulerTargetFps" from the config file
+            var json = File.ReadAllText(Globals.AppConfigPath);
+            dynamic release = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            int fps = release.DFIntTaskSchedulerTargetFps;
+            return fps;
+        }
 
         private async void Checks()
         {
+            ButtonSorter.Visibility = Visibility.Hidden;
             if (!Directory.Exists(Globals.AppDataFolder))
             {
                 Directory.CreateDirectory(Globals.AppDataFolder);
@@ -174,10 +195,9 @@ namespace RobloxUnlocker
             // Check for updates
             await releaseChecker.CheckForUpdates(currentVersion);
 
+            PatchGame();
 
             fpsButton.IsEnabled = true;
-
-            patchGame();
 
             // Check if roblox is running
             var process = Process.GetProcessesByName("RobloxPlayerBeta").FirstOrDefault();
