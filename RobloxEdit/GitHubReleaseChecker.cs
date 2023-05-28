@@ -122,7 +122,7 @@ namespace RobloxUnlocker
             Process.Start(installerPath);
 
             // Open the installer folder
-            Process.Start("explorer.exe", appDataFolder);
+            // Process.Start("explorer.exe", appDataFolder);
 
             // Close the current application
             Application.Current.Shutdown();
