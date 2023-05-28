@@ -43,7 +43,7 @@
         <Label x:Name="fpsLockToLabel" Content="Set cap to" HorizontalAlignment="Left" Margin="10,118,0,0" Width="83" Height="26" VerticalAlignment="Top" Foreground="White"/>
         <Label x:Name="robloxLabel" Content="Loading" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.184,0.541" Width="340" Height="34" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontSize="16"/>
         <Button x:Name="refreshButton" Content="Refresh Data" HorizontalAlignment="Center" Margin="0,68,0,0" Width="160" Click="RefreshButton_Click" Height="20" VerticalAlignment="Top" Background="#FF444444" Foreground="White"/>
-        <Button x:Name="ButtonSorter" Grid.Column="1" Content="Ignore" HorizontalAlignment="Left" Margin="20,122,0,0" VerticalAlignment="Top" Width="100" Background="#FF444444" Foreground="White" Click="ButtonSorter_Click" IsEnabled="False"/>
+        <Button x:Name="OverlayButton" Grid.Column="1" Content="Overlay" HorizontalAlignment="Left" Margin="20,122,0,0" VerticalAlignment="Top" Width="100" Background="#FF444444" Foreground="White" Click="OverlayButton_Click"/>
 
     </Grid>
 </Window>

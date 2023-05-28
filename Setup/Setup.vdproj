@@ -15,14 +15,14 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_2EC929570F194AAE8D35E2B23EE48D45"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_0CE6B1488F0D145340415AAA137CFC96"
+        "OwnerKey" = "8:_2EC929570F194AAE8D35E2B23EE48D45"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4F97ED9C1CB995AA96E13246F16DDF29"
-        "OwnerKey" = "8:_2EC929570F194AAE8D35E2B23EE48D45"
+        "MsmKey" = "8:_2EC929570F194AAE8D35E2B23EE48D45"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4F97ED9C1CB995AA96E13246F16DDF29"
+        "OwnerKey" = "8:_0CE6B1488F0D145340415AAA137CFC96"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -150,14 +150,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4F97ED9C1CB995AA96E13246F16DDF29"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0CE6B1488F0D145340415AAA137CFC96"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4F97ED9C1CB995AA96E13246F16DDF29"
+                    "_0CE6B1488F0D145340415AAA137CFC96"
                     {
                     "Name" = "8:Newtonsoft.Json.dll"
                     "Attributes" = "3:512"
@@ -445,7 +445,7 @@
             "Target" = "8:_2EC929570F194AAE8D35E2B23EE48D45"
             "Folder" = "8:_E481FB3B4334426F9AAE33707E0318EF"
             "WorkingFolder" = "8:_C147877176A345AB9BA550794137B229"
-            "Icon" = "8:"
+            "Icon" = "8:_6FED341F156E4F8FA290E3FFB6E060A5"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_75C84FDCAE1E4C94B76A7E323A73EE54"
@@ -863,7 +863,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_2EC929570F194AAE8D35E2B23EE48D45"
             {
-            "SourcePath" = "8:..\\RobloxEdit\\obj\\x64\\Debug\\RobloxUnlocker.exe"
+            "SourcePath" = "8:..\\RobloxEdit\\obj\\Debug\\RobloxUnlocker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_C147877176A345AB9BA550794137B229"

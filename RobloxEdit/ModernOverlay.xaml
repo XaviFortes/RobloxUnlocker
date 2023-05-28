@@ -1,0 +1,15 @@
+﻿<Window x:Class="RobloxUnlocker.ModernOverlay"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RobloxUnlocker"
+        mc:Ignorable="d"
+        Title="ModernOverlay" Height="450" Width="800" Background="#00444444" Loaded="Window_Loaded" WindowStyle="None" AllowsTransparency="True" Topmost="True">
+    <Grid>
+        <Label x:Name="labelPing" Content="Ping to server: " HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top" Foreground="White" FontSize="14"/>
+        <Slider x:Name="slider" HorizontalAlignment="Left" Margin="94,14,0,0" VerticalAlignment="Top" Width="120" ValueChanged="Slider_ValueChanged"/>
+        <Label x:Name="label" Content="Transparency" HorizontalAlignment="Left" Margin="10,10,0,0" Foreground="White" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

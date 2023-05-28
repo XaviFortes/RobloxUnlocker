@@ -183,7 +183,6 @@ namespace RobloxUnlocker
 
         private async void Checks()
         {
-            ButtonSorter.Visibility = Visibility.Hidden;
             if (!Directory.Exists(Globals.AppDataFolder))
             {
                 Directory.CreateDirectory(Globals.AppDataFolder);
@@ -263,14 +262,10 @@ namespace RobloxUnlocker
                 DragMove();
         }
 
-        private void ButtonSorter_Click(object sender, RoutedEventArgs e)
+        private void OverlayButton_Click(object sender, RoutedEventArgs e)
         {
-            // var searchDnD = new searchImageDnD();
-            // searchDnD.Show();
-            /*
-            var invSort = new InventorySort();
-            invSort.Show();
-            */
+            ModernOverlay modernOverlay = new ModernOverlay();
+            modernOverlay.Show();
         }
     }
 
